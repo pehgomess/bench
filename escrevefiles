@@ -1,0 +1,50 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<unistd.h>
+#include<fcntl.h>
+
+
+
+int main ( int argc, char **argv ) {
+
+        char *filename;
+        long long int reg ;
+        long long int total ;
+        int fd,vezes,_vezes;
+
+        struct flock lock;
+        FILE *arq ;
+
+        filename=argv[1];
+        total=atoll(argv[2]);
+        vezes=atoi(argv[3]);
+
+        arq=fopen(filename,"a");
+        if (arq == NULL ) {
+                printf("erro ao abrir arq\n");
+                exit(1);
+        }
+
+        fd=fileno(arq);
+        lock.l_type=F_WRLCK;
+        lock.l_whence=SEEK_SET;
+        lock.l_len=0;
+
+        fcntl(fd,F_SETLKW,&lock);
+        fcntl(fd,F_SETFL,O_DIRECT);
+
+        for(reg=1;reg<=total;reg++) {
+                for(_vezes=1;_vezes<=vezes;_vezes++) {
+                        if ( fwrite((const void *)&reg,sizeof(reg),1,arq) < 1 ) {
+                                printf ("Erro na escrita do registro %lld\n",reg);
+                                exit(1);
+                        }
+                }
+
+        }
+
+        fcntl(fd,F_UNLCK,&lock);
+        printf ("Termino da escrita\n",reg);
+        fclose(arq);
+
+}
