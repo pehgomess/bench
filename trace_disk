@@ -1,0 +1,11 @@
+monitorando disco
+
+- http://duch.mimuw.edu.pl/~lichota/09-10/Optymalizacja-open-source/Materialy/10%20-%20Dysk/gelato_ICE06apr_blktrace_brunelle_hp.pdf
+blktrace -d /dev/sdp -o - | blkparse -i -
+
+
+- https://oss.oracle.com/~mason/seekwatcher/
+seekwatcher -t dd.trace -o dd.png -p 'dd if=/dev/zero of=/mnt/file bs=1M count=4096' -d /dev/sda1 -d /dev/sdb1
+
+
+time dd if=/dev/zero of=/root/testfile bs=4k count=10000 oflag=direct && sync && echo 3 > /proc/sys/vm/drop_caches
